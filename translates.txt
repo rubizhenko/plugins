@@ -1,0 +1,6 @@
+Numar de vizitatori astazi				Кількість відвідувачів сьогодні
+Numar de utilizatori online				Кількість інтернет-користувачів
+Numar de articole cumparate astazi		Кількість придбаних товарів сьогодні
+
+
+
