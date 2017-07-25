@@ -4,6 +4,8 @@ body{
 	padding-top: 30px;
 }
 .topPlugin{
+	font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+	font-size: 16px;
 	text-align: center;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -14,6 +16,7 @@ body{
 	right: 0;
 	z-index: 1000;
 	padding: 3px;
+	background-color: #f1edee;
 }
 .topPlugin__count{
 	margin-right: 30px;
@@ -21,6 +24,9 @@ body{
 	position: relative;
 	line-height: 28px;
 	display: inline-block;
+}
+.topPlugin__count:last-child{
+	margin-right: 0;
 }
 .topPlugin__count:first-child::before, .topPlugin__count:nth-child(2)::before, .topPlugin__count:last-child::before{
 	content: '';

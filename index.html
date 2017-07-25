@@ -12,7 +12,17 @@
 		<span class="topPlugin__count">Număr de articole cumpărate astăzi:</span>
 	</div>
 	<script type="text/javascript">
-		
+		const DOMbody = document.body;
+		console.log(DOMbody);
+		function createTopPlugin(){
+			return `
+			<div class="topPlugin">
+				<span class="topPlugin__count">${countText1}:</span>
+				<span class="topPlugin__count">${countText2}:</span>
+				<span class="topPlugin__count">${countText3}:</span>
+			</div>`;
+		}
+		DOMbody.appendChild(topPlugin);
 	</script>
 </body>
 </html>
