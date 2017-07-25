@@ -1,6 +1,7 @@
 let isStorage = false; //Variable detect localStorage support default localStorage is not supported
 window.localStorage ? isStorage = true : isStorage = false;
 
+
 let params = JSON.parse(localStorage.getItem("parameters")) || {
 	lang: 'ro',
 	minUser: 1000, //Minimum users on site per day
@@ -9,7 +10,7 @@ let params = JSON.parse(localStorage.getItem("parameters")) || {
 	maxUserOnline: 320, //Maximum users online
 	leads: 123 //Current leads 
 }
-
+let city = getLocation('city');
 const DOMbody = document.body;
 //Text for Top Plugin
 const topPluginText = {
@@ -20,9 +21,22 @@ const statusBarText = {
 	'ro': ['În acest moment, sunt', 'de utilizatori care navighează pe această pagină'],
 	'ru': ['На данный момент', 'пользователей просматривают эту страницу']
 }
+const usersData = {
+	'ru': {'text1':'Вадим Во*** с города', 
+			'city':'Москва', 
+			'text2':'заказал',
+			'text3':'единиц на сумму'
+		},
+	'ro': {'text1':'Ștefan Go*** din',  
+			'city':'București', 
+			'text2':'a comandat',
+			'text3':'articol în valoare de'
+		},
+}
 
 let usersNum = getAllUsersCount();
 let onlineUsersNum = getOnlineUsers();
+
 
 function getRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -72,10 +86,31 @@ function AddStatusBar(){
 function AddLeadInfo(){
 	const leadInfo = document.createElement("div");
 	leadInfo.className = "leadInfoPlugin";
+	let LeadInfoInner = 
+			`<p class="leadInfoPlugin__text">${usersData[params.lang].text1} ${city}</p>`;
+	leadInfo.innerHTML = LeadInfoInner;
+	DOMbody.appendChild(leadInfo);
 }
-
+function getLocation(place){
+	let location;
+	let xmlhttp = new XMLHttpRequest();
+	let url = "http://freegeoip.net/json/";
+	xmlhttp.open("GET", url, true);
+	xmlhttp.send();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			location = JSON.parse(this.responseText);
+			for(let i=0; i < JSON.parse(this.responseText).length; i++){
+				location[i] = JSON.parse(this.responseText)[i];
+			}
+			console.log(location);
+			return location;
+		}
+	};
+}
 AddTopPlugin();
 AddStatusBar();
+AddLeadInfo();
 
 const allUsers = document.querySelector('.topPlugin__count:first-child strong');
 const onlineUsers = document.querySelector('.topPlugin__count:nth-child(2) strong');
