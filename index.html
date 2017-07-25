@@ -2,27 +2,75 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<title>Plugins for landings</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-	<div class="topPlugin">
-		<span class="topPlugin__count">Număr de vizitatori astăzi:</span>
-		<span class="topPlugin__count">Număr de utilizatori online:</span>
-		<span class="topPlugin__count">Număr de articole cumpărate astăzi:</span>
-	</div>
+	
 	<script type="text/javascript">
-		const DOMbody = document.body;
-		console.log(DOMbody);
-		function createTopPlugin(){
-			return `
-			<div class="topPlugin">
-				<span class="topPlugin__count">${countText1}:</span>
-				<span class="topPlugin__count">${countText2}:</span>
-				<span class="topPlugin__count">${countText3}:</span>
-			</div>`;
+		let isStorage = false; //Variable detect localStorage support default localStorage is not supported
+		window.localStorage ? isStorage = true : isStorage = false;
+
+
+		let params = JSON.parse(localStorage.getItem("parameters")) || {
+			lang: 'ru',
+			minUser: 700, //Minimum users on site per day
+			maxUser: 1200, //Maximum users on site per day
+			minUserOnline: 150, //Minimum users online
+			maxUserOnline: 320, //Maximum users online
+			leads: 100 //Current leads 
 		}
-		DOMbody.appendChild(topPlugin);
+
+		const DOMbody = document.body;
+		//Text for Top Plugin
+		const topPluginText = {
+			'ro': ['Număr de vizitatori astăzi','Număr de utilizatori online','Număr de articole cumpărate astăzi'],
+			'ru': ['Количество посетителей сегодня', 'Сейчас на сайте', 'Количество покупок сегодня']
+		}
+		function getRandomInt(min, max) {
+			return Math.floor(Math.random() * (max - min + 1)) + min;
+		}
+		function getAllUsersCount(){
+			let allUsers = getRandomInt(params.minUser, params.maxUser);
+			if (isStorage) {
+				let storageCount = localStorage.getItem("allUsersCount");
+				storageCount > allUsers ? allUsers = storageCount : localStorage.setItem("allUsersCount", allUsers);
+			}
+			return allUsers;
+		}
+		function getOnlineUsers(){
+			let onlineUsers = getRandomInt(params.minUserOnline, params.maxUserOnline);
+			return onlineUsers;
+		}
+		function updateValue(element, value){
+			element.innerHTML =' '+ value;
+		}
+		//Add horizontal top line to page with users/leads status
+		function AddTopPlugin(){
+			const topPlugin = document.createElement("div");
+			let onlineUsers
+			topPlugin.className="topPlugin";
+			const countText1 = topPluginText[params.lang][0], 
+				countText2 = topPluginText[params.lang][1], 
+				countText3 = topPluginText[params.lang][2];
+
+			let topPluginInner =
+				`<span class="topPlugin__count">${countText1}:<strong> `+getAllUsersCount()+`</strong></span>
+				<span class="topPlugin__count">${countText2}:<strong> `+setInterval(getOnlineUsers, 1000)+`</strong></span>
+				<span class="topPlugin__count">${countText3}:<strong> ${params.leads}</strong></span>`;
+
+			topPlugin.innerHTML = topPluginInner;
+			DOMbody.appendChild(topPlugin);
+		}
+		AddTopPlugin();
+
+		// const allUsers = document.querySelector('.topPlugin__count:first-child strong');
+		// const onlineUsers = document.querySelector('.topPlugin__count:nth-child(2) strong');
+		// const leads = document.querySelector('.topPlugin__count:last-child strong');
+
+		// setInterval(function(){updateValue(allUsers, getAllUsersCount())}, 15000);
+		// setInterval(function(){updateValue(onlineUsers, getOnlineUsers())}, 5000);
 	</script>
 </body>
 </html>
