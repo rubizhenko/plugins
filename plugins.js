@@ -1,3 +1,4 @@
+'use strict';
 let isStorage = false; //Variable detect localStorage support default localStorage is not supported
 window.localStorage ? isStorage = true : isStorage = false;
 
@@ -11,6 +12,7 @@ let params = JSON.parse(localStorage.getItem("parameters")) || {
 	leads: 123 //Current leads 
 }
 const DOMbody = document.body;
+
 //Text for Top Plugin
 const topPluginText = {
 	'ro': ['Număr de vizitatori astăzi', 'Număr de utilizatori online', 'Număr de articole cumpărate astăzi'],
@@ -86,27 +88,24 @@ function AddLeadInfo(){
 	const leadInfo = document.createElement("div");
 	leadInfo.className = "leadInfoPlugin";
 	let LeadInfoInner = 
-			`<p class="leadInfoPlugin__text">${usersData[params.lang].text1} ${getLocation()['city']}</p>`;
+			`<p class="leadInfoPlugin__text">${usersData[params.lang].text1} ${city}</p>`;
 	leadInfo.innerHTML = LeadInfoInner;
 	DOMbody.appendChild(leadInfo);
 }
 
 function getLocation(){
-	let resp;
 	let xmlhttp = new XMLHttpRequest();
 	let url = "http://freegeoip.net/json/";
 	xmlhttp.open("GET", url, true);
-	xmlhttp.send();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
-			resp = JSON.parse(this.responseText);
-			return resp;
+			localStorage.setItem('LocationData', this.responseText);
 		}
 	};
-	
+	xmlhttp.send();
 }
-
-console.log(getLocation());
+getLocation();
+let city = JSON.parse(localStorage.getItem('LocationData'))['city'] || usersData[params.lang]['city'];
 AddTopPlugin();
 AddStatusBar();
 AddLeadInfo();
