@@ -10,7 +10,6 @@ let params = JSON.parse(localStorage.getItem("parameters")) || {
 	maxUserOnline: 320, //Maximum users online
 	leads: 123 //Current leads 
 }
-let city = getLocation('city');
 const DOMbody = document.body;
 //Text for Top Plugin
 const topPluginText = {
@@ -87,30 +86,27 @@ function AddLeadInfo(){
 	const leadInfo = document.createElement("div");
 	leadInfo.className = "leadInfoPlugin";
 	let LeadInfoInner = 
-			`<p class="leadInfoPlugin__text">${usersData[params.lang].text1} ${city}</p>`;
+			`<p class="leadInfoPlugin__text">${usersData[params.lang].text1} ${getLocation()['city']}</p>`;
 	leadInfo.innerHTML = LeadInfoInner;
 	DOMbody.appendChild(leadInfo);
 }
 
-function getLocation(callback){
+function getLocation(){
+	let resp;
 	let xmlhttp = new XMLHttpRequest();
 	let url = "http://freegeoip.net/json/";
 	xmlhttp.open("GET", url, true);
+	xmlhttp.send();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
-			if (typeof callback == "function") {
-				callback.apply(xmlhttp);
-			}
-			//return JSON.parse(this.responseText);
+			resp = JSON.parse(this.responseText);
+			return resp;
 		}
 	};
-	xmlhttp.send();
+	
 }
-let locationData = getLocation(function(){
-	let resp = JSON.parse(this.responseText);
-	return resp;
-});
-console.log(locationData);
+
+console.log(getLocation());
 AddTopPlugin();
 AddStatusBar();
 AddLeadInfo();
