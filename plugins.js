@@ -91,23 +91,26 @@ function AddLeadInfo(){
 	leadInfo.innerHTML = LeadInfoInner;
 	DOMbody.appendChild(leadInfo);
 }
-function getLocation(place){
-	let location;
+
+function getLocation(callback){
 	let xmlhttp = new XMLHttpRequest();
 	let url = "http://freegeoip.net/json/";
 	xmlhttp.open("GET", url, true);
-	xmlhttp.send();
 	xmlhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
-			location = JSON.parse(this.responseText);
-			for(let i=0; i < JSON.parse(this.responseText).length; i++){
-				location[i] = JSON.parse(this.responseText)[i];
+			if (typeof callback == "function") {
+				callback.apply(xmlhttp);
 			}
-			console.log(location);
-			return location;
+			//return JSON.parse(this.responseText);
 		}
 	};
+	xmlhttp.send();
 }
+let locationData = getLocation(function(){
+	let resp = JSON.parse(this.responseText);
+	return resp;
+});
+console.log(locationData);
 AddTopPlugin();
 AddStatusBar();
 AddLeadInfo();
