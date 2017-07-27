@@ -219,6 +219,13 @@ if (!isNaN(price) && !isMobile()) {
 		setTimeout(function() { leadInfo.classList.remove("active") }, 7000);
 	}
 
+	function addCallBackPlugin(){
+		const callBackPlugin = document.createElement("div");
+		callBackPlugin.className = "callBack";
+		leadInfo.innerHTML = `<div class="callBack__center"><span>Заказать</span></div>
+        						<div class="callBack__shadow"></div>`;
+	}
+
 	AddTopPlugin();
 	AddStatusBar();
 	AddLeadInfo();
@@ -262,9 +269,7 @@ function animateCallBack(flag){
 		spinnerTimer = setInterval(function(){callBack.classList.toggle('spinner'); 
 											callBackCenter.classList.toggle('bg-img-none'); 
 											callBackText.classList.toggle('text-hide')}, 5000);
-	} else{
-		clearInterval(spinnerTimer);
-	}
+	} else {clearInterval(spinnerTimer);}
 }
 animateCallBack(true);
 callBack.addEventListener('mouseover', function(){animateCallBack(false)});

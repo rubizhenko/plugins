@@ -1,20 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-	<title>Plugins for landings</title>
-	<link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>Plugins for landings</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
+
 <body>
-	
-	<span class="al-raw-currency">$</span>
-	<span class="al-raw-cost-promo">   12 f</span>
-	<span class="al-cost">   12 $</span>
-	<div class="callBack">
-		<div class="callBack__center"><span>Заказать</span></div>
-		<div class="callBack__shadow"></div>
-	</div>
-	<script type="text/javascript" src="plugins-for-old-browser.js"></script>
+    <span class="al-raw-currency">$</span>
+    <span class="al-raw-cost-promo">   12 f</span>
+    <span class="al-cost">   12 $</span>
+    <div class="callBack">
+        <div class="callBack__center"><span>Заказать</span></div>
+        <div class="callBack__shadow"></div>
+    </div>
+    <div id="overlay-popup-m1"></div>
+    <div id="m1-form" class="m1modal">
+    <span class="close-m1"></span>
+        <div>
+            <h2 class="popup-m1-title">ÎȚI PLACE ACEASTĂ OFERTĂ?</h2>
+            <div class="popup-m1-cont">
+                <p class="popup-m1-text1">Îți vom furniza informații despre produs și cele mai bune condiții și îți vom prezenta oferte speciale!</p>
+                <form method="POST" action="/land/order" class="popup-m1-form al-form">
+                	<select class="al-country" style="display: none;"></select>
+                    <input type="text" name="name" placeholder="Nume" required="">
+                    <input type="text" name="phone" placeholder="Telefon" required="">
+                    <button type="submit">CONTACTEAZĂ-MĂ TELEFONIC</button>
+                </form>
+                <div class="popup-m1-text2">Operatorul te va contacta telefonic în 5-10 minute.</div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="plugins.js"></script>
 </body>
+
 </html>
