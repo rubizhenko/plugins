@@ -1,16 +1,90 @@
 "use strict";
 const DOMbody = document.body;
 const minDeviceWidth = 768;
-let isStorage = false; //Variable detect localStorage support default localStorage is not supported
+let locationData = [], //geolocation data
+	city;
 let params = {
-		lang: 'ru',
-		minUser: 1000, //Minimum users on site per day
-		maxUser: 1600, //Maximum users on site per day
-		minUserOnline: 150, //Minimum users online
-		maxUserOnline: 320, //Maximum users online
-		leads: +localStorage.getItem("leadsCount") || 123 //Current leads 
-	}
-
+	lang: 'ru',
+	minUser: 1000, //Minimum users on site per day
+	maxUser: 1600, //Maximum users on site per day
+	minUserOnline: 150, //Minimum users online
+	maxUserOnline: 320, //Maximum users online
+	leads: 123 //Current leads
+}
+//Text for Top Plugin
+const topPluginText = {
+	'ro': ['Număr de vizitatori astăzi', 'Număr de utilizatori online', 'Număr de articole cumpărate astăzi'],
+	'ru': ['Количество посетителей сегодня', 'Сейчас на сайте', 'Количество покупок сегодня']
+}
+//Text for Status bottom Plugin 
+const statusBarText = {
+	'ro': ['În acest moment, sunt', 'de utilizatori care navighează pe această pagină'],
+	'ru': ['На данный момент', 'пользователей просматривают эту страницу']
+}
+//Text for Leads Plugin 
+const usersData = {
+	'ru': [{
+			'text1': 'Вадим с города',
+			'city': 'Москва',
+			'text2': 'Упаковок заказано',
+			'text3': 'На сумму'
+		},
+		{
+			'text1': 'Владимир с города',
+			'city': 'Волга',
+			'text2': 'Упаковок заказано',
+			'text3': 'На сумму'
+		},
+		{
+			'text1': 'Александр с города',
+			'city': 'Припять',
+			'text2': 'Упаковок заказано',
+			'text3': 'На сумму'
+		},
+		{
+			'text1': 'Антон с города',
+			'city': 'Москва',
+			'text2': 'Упаковок заказано',
+			'text3': 'На сумму'
+		},
+		{
+			'text1': 'Кирилл с города',
+			'city': 'Москва',
+			'text2': 'Упаковок заказано',
+			'text3': 'На сумму'
+		}
+	],
+	'ro': [{
+		'text1': 'Ștefan din',
+		'city': 'București',
+		'text2': 'Pachetele comandate',
+		'text3': 'La valoarea'
+	}]
+}
+//Text for CallBack Plugin
+const callBackPluginText = {
+	'ro': 'Сomanda',
+	'ru': 'Заказать'
+}
+//Text for PopupForm
+const popupText = {
+	'ru': {
+		'title': 'Нравится ли вам это предложение?',
+		'desc': 'Мы будем предоставлять информацию о продукции и лучшие условия, и мы представим специальные предложения!',
+		'name': 'Ваше имя',
+		'phone': 'Телефон',
+		'order': 'Заказать',
+		'desc2': 'Оператор позвонит Вам в течение 5-10 минут.'
+	},
+	'ro': {
+		'title': 'ÎȚI PLACE ACEASTĂ OFERTĂ?',
+		'desc': 'Îți vom furniza informații despre produs și cele mai bune condiții și îți vom prezenta oferte speciale!',
+		'name': 'Nume',
+		'phone': 'Telefon',
+		'order': 'CONTACTEAZĂ-MĂ TELEFONIC',
+		'desc2': 'Operatorul te va contacta telefonic în 5-10 minute.'
+	},
+}
 //Check window width
 function isMobile() {
 	if (window.innerWidth < minDeviceWidth) {
@@ -19,7 +93,14 @@ function isMobile() {
 		return false;
 	}
 }
-window.localStorage != undefined ? isStorage = true : isStorage = false;
+//Check local storage support
+function isStorage() {
+	if (window.localStorage != undefined) {
+		return true;
+	} else {
+		return false;
+	}
+}
 //Change display property
 function displayOnMobile() {
 	if (isMobile()) {
@@ -36,11 +117,31 @@ function displayOnMobile() {
 }
 window.addEventListener("resize", displayOnMobile)
 
+//get geolocation data using IP adress
+let getLocation = function() {
+	let xmlhttp = new XMLHttpRequest();
+	let url = "http://freegeoip.net/json/";
+	xmlhttp.open("GET", url, false);
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			locationData = JSON.parse(this.responseText);
+			city = locationData['city'];
+		}
+	};
+	try{
+		xmlhttp.send();
+	}
+	catch(err){
+		city = usersData[params.lang][0]['city'];
+	}
+	
+}();
+
 const priceNode = document.getElementsByClassName('al-raw-cost-promo')[0];
 const currencyNode = document.getElementsByClassName('al-raw-currency')[0];
 const priceNode2 = document.getElementsByClassName('al-cost')[0];
 let price, currency;
-(function(){
+(function() {
 	if (DOMbody.contains(priceNode)) {
 		price = parseInt(priceNode.textContent.trim());
 		currency = currencyNode.textContent.trim();
@@ -52,119 +153,27 @@ let price, currency;
 })();
 
 if (!isNaN(price) && !isMobile()) {
-	
-	
-
-	
-	//Text for Top Plugin
-	const topPluginText = {
-		'ro': ['Număr de vizitatori astăzi', 'Număr de utilizatori online', 'Număr de articole cumpărate astăzi'],
-		'ru': ['Количество посетителей сегодня', 'Сейчас на сайте', 'Количество покупок сегодня']
-	}
-	//Text for Status bottom Plugin 
-	const statusBarText = {
-		'ro': ['În acest moment, sunt', 'de utilizatori care navighează pe această pagină'],
-		'ru': ['На данный момент', 'пользователей просматривают эту страницу']
-	}
-	//Text for Leads Plugin 
-	const usersData = {
-		'ru': [{
-				'text1': 'Вадим с города',
-				'city': 'Москва',
-				'text2': 'Упаковок заказано',
-				'text3': 'На сумму'
-			},
-			{
-				'text1': 'Владимир с города',
-				'city': 'Волга',
-				'text2': 'Упаковок заказано',
-				'text3': 'На сумму'
-			},
-			{
-				'text1': 'Александр с города',
-				'city': 'Припять',
-				'text2': 'Упаковок заказано',
-				'text3': 'На сумму'
-			},
-			{
-				'text1': 'Антон с города',
-				'city': 'Москва',
-				'text2': 'Упаковок заказано',
-				'text3': 'На сумму'
-			},
-			{
-				'text1': 'Кирилл с города',
-				'city': 'Москва',
-				'text2': 'Упаковок заказано',
-				'text3': 'На сумму'
-			}
-		],
-		'ro': [{
-			'text1': 'Ștefan din',
-			'city': 'București',
-			'text2': 'Pachetele comandate',
-			'text3': 'La valoarea'
-		}]
-	}
-	//Text for CallBack Plugin
-	const callBackPluginText = {
-		'ro': 'Сomanda',
-		'ru': 'Заказать'
-	}
-	//Text for PopupForm
-	const popupText = {
-		'ru': {
-				'title': 'Нравится ли вам это предложение?',
-				'desc': 'Мы будем предоставлять информацию о продукции и лучшие условия, и мы представим специальные предложения!',
-				'name': 'Ваше имя',
-				'phone': 'Телефон',
-				'order': 'Заказать',
-				'desc2': 'Оператор позвонит Вам в течение 5-10 минут.'
-			},
-		'ro': {
-				'title': 'ÎȚI PLACE ACEASTĂ OFERTĂ?',
-				'desc': 'Îți vom furniza informații despre produs și cele mai bune condiții și îți vom prezenta oferte speciale!',
-				'name': 'Nume',
-				'phone': 'Telefon',
-				'order': 'CONTACTEAZĂ-MĂ TELEFONIC',
-				'desc2': 'Operatorul te va contacta telefonic în 5-10 minute.'
-			},
-	}
 	let usersNum = getAllUsersCount(), //Users on site during a day
 		onlineUsersNum = getOnlineUsers(), //Online users
 		randomUser = 0, //user in Lead plugin
 		boughtNow = 1, //user bought {boughtNow} items
 		evaluateSum = price,
-		locationData = [], //geolocation data
 		todayLeads = params.leads, //leads
 		rndNumArr = [], //showed users in lead-popup
 		userArray = usersData[params.lang], //info from common array about some random user
 		leadText1 = usersData[params.lang][randomUser].text1,
 		leadText2 = usersData[params.lang][randomUser].text2,
 		leadText3 = usersData[params.lang][randomUser].text3;
-
-	//get geolocation data using IP adress
-	let getLocation = function() {
-		let xmlhttp = new XMLHttpRequest();
-		let url = "http://freegeoip.net/json/";
-		xmlhttp.open("GET", url, false);
-		xmlhttp.onreadystatechange = function() {
-			if (this.readyState == 4 && this.status == 200) {
-				locationData = JSON.parse(this.responseText);
-			}
-		};
-		xmlhttp.send();
-	}();
-
-	let city = locationData['city'] || usersData[params.lang][randomUser]['city'];
+	if (isStorage() && localStorage.getItem("leadsCount")) {
+		todayLeads = parseInt(localStorage.getItem("leadsCount"));
+	}
 
 	function getRandomInt(min, max) {
 		return Math.floor(Math.random() * (max - min + 1)) + min;
 	}
-
 	function getAllUsersCount() {
 		let allUsers = getRandomInt(params.minUser, params.maxUser);
-		if (isStorage) {
+		if (isStorage()) {
 			let storageCount = localStorage.getItem("allUsersCount");
 			storageCount > allUsers ? allUsers = storageCount : localStorage.setItem("allUsersCount", allUsers);
 		}
@@ -231,11 +240,12 @@ if (!isNaN(price) && !isMobile()) {
 			leadText2 = usersData[params.lang][randomUser].text2,
 			leadText3 = usersData[params.lang][randomUser].text3;
 		todayLeads += boughtNow;
-		if (isStorage) { localStorage.setItem('leadsCount', todayLeads); }
+		if (isStorage()) { localStorage.setItem('leadsCount', todayLeads); }
 		return leadText1 + ' ' + city + '. ' + leadText2 + ': ' + boughtNow + '. ' + leadText3 + ': ' + evaluateSum + ' ' + currency;
 	};
-
+	// lead popup wrapper
 	const leadInfo = document.createElement("div");
+
 	function AddLeadInfo() {
 		leadInfo.className = "leadInfoPlugin";
 		leadInfo.innerHTML = `<p class="leadInfoPlugin__text"></p>`;
@@ -258,6 +268,7 @@ if (!isNaN(price) && !isMobile()) {
 		DOMbody.appendChild(callBackPlugin);
 	}
 	const overlay = document.createElement("div");
+
 	function addOverlay() {
 		overlay.setAttribute('id', 'overlay-popup-m1');
 		DOMbody.appendChild(overlay);
@@ -290,6 +301,7 @@ if (!isNaN(price) && !isMobile()) {
 		overlay.classList.add('js-show');
 		popupForm.classList.add('js-show');
 	}
+
 	function hidePopupForm() {
 		overlay.classList.remove('js-show');
 		popupForm.classList.remove('js-show');
@@ -334,8 +346,8 @@ if (!isNaN(price) && !isMobile()) {
 	const callBack = document.getElementsByClassName('callBack')[0];
 	const callBackCenter = document.getElementsByClassName('callBack__center')[0];
 	const callBackText = document.querySelector('.callBack__center span');
+	
 	let spinnerTimer;
-
 	function animateCallBack(flag) {
 		if (flag) {
 			spinnerTimer = setInterval(function() {
@@ -353,7 +365,7 @@ if (!isNaN(price) && !isMobile()) {
 	closePopupBtn.addEventListener('click', hidePopupForm);
 	overlay.addEventListener('click', hidePopupForm);
 
-	window.addEventListener('mouseout', function(event){
+	window.addEventListener('mouseout', function(event) {
 		let comebacker = true;
 		if (event.pageY - window.scrollY < 1 && comebacker) {
 			comebacker = false;
