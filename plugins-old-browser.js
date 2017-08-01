@@ -984,7 +984,7 @@ if (!isNaN(price) && !isMobile()) {
 			var str = '';
 			randomUser = function () {
 				var rndNum = getRandomInt(0, userArray.length - 1);
-				while (rndNumArr.includes(rndNum)) {
+				while (!(rndNumArr.indexOf(rndNum) === -1)) {
 					rndNum = getRandomInt(0, userArray.length - 1);
 					if (rndNumArr.length == userArray.length) {
 						clearInterval(updLead);
