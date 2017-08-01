@@ -9,10 +9,12 @@ let params = {
 	maxUser: 1600, //Maximum users on site per day
 	minUserOnline: 150, //Minimum users online
 	maxUserOnline: 200, //Maximum users online
-	leads: 123, //Current leads
-	topPluginHeight: 34,
-	callBackDiam: 120,
-	callBackFontSize: 14
+	leads: 123 //Current leads
+}
+let customCSS = {
+	callBackDiam: 150,
+	callBackFontSize: 14,
+	topPluginHeight: 34
 }
 let styles = document.createElement("style");
 
@@ -820,8 +822,20 @@ body {\
 		transform: scale(1);\
 		opacity: 1\
 	}\
-}"
+}\
+@media screen and (max-width:1023px){\
+	body{\
+		padding-top: 62px;\
+	}\
+}\
+@media screen and (max-width:767px){\
+	body{\
+		padding-top: 0;\
+	}\
+}\
+"
 DOMbody.appendChild(styles);
+
 //Text for Top Plugin
 const topPluginText = {
 	'ro': ['Număr de vizitatori astăzi', 'Număr de utilizatori online', 'Număr de articole cumpărate astăzi'],
@@ -881,21 +895,7 @@ function isStorage() {
 		return false;
 	}
 }
-//Change display property
-function displayOnMobile() {
-	if (isMobile()) {
-		document.getElementsByClassName('topPlugin')[0].style.display = "none";
-		document.getElementsByClassName('statusPlugin')[0].style.display = "none";
-		document.getElementsByClassName('leadInfoPlugin')[0].style.display = "none";
-		document.getElementsByClassName('callBack')[0].style.display = "none";
-	} else {
-		document.getElementsByClassName('topPlugin')[0].style.display = "block";
-		document.getElementsByClassName('statusPlugin')[0].style.display = "block";
-		document.getElementsByClassName('leadInfoPlugin')[0].style.display = "block";
-		document.getElementsByClassName('callBack')[0].style.display = "block";
-	}
-}
-window.addEventListener("resize", displayOnMobile)
+
 
 //get geolocation data using IP adress
 let getLocation = function() {
@@ -970,8 +970,8 @@ if (!isNaN(price) && !isMobile()) {
 		element.innerHTML = ' ' + value;
 	}
 	//Add horizontal top line to page with users/leads status
+	const topPlugin = document.createElement("div");
 	function AddTopPlugin() {
-		const topPlugin = document.createElement("div");
 		topPlugin.className = "topPlugin";
 		const countText1 = topPluginText[params.lang][0],
 			countText2 = topPluginText[params.lang][1],
@@ -1152,4 +1152,29 @@ if (!isNaN(price) && !isMobile()) {
 			return false;
 		}
 	});
+
+	//Change display property
+	function displayOnMobile() {
+		if (isMobile()) {
+			document.getElementsByClassName('topPlugin')[0].style.display = "none";
+			document.getElementsByClassName('statusPlugin')[0].style.display = "none";
+			document.getElementsByClassName('leadInfoPlugin')[0].style.display = "none";
+			document.getElementsByClassName('callBack')[0].style.display = "none";
+		} else {
+			document.getElementsByClassName('topPlugin')[0].style.display = "block";
+			document.getElementsByClassName('topPlugin')[0].style.height = "block";
+			document.getElementsByClassName('statusPlugin')[0].style.display = "block";
+			document.getElementsByClassName('leadInfoPlugin')[0].style.display = "block";
+			document.getElementsByClassName('callBack')[0].style.display = "block";
+		}
+	}
+	window.addEventListener("resize", displayOnMobile)
+
+	let setCustomStyles = function (){
+		DOMbody.style.paddingTop = topPlugin.style.height+'px';
+		callBack.style.width = customCSS.callBackDiam/Math.sqrt(2)+'px';
+		callBack.style.height = customCSS.callBackDiam/Math.sqrt(2)+'px';
+		callBack.style.fontSize = customCSS.callBackFontSize+'px';
+	}();
+
 }
